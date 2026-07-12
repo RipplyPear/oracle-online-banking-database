@@ -266,3 +266,7 @@ The GitHub Actions workflow repeats the same build and test process on an Ubuntu
 - IBAN validation is deliberately simplified to structural validation; production software should implement the ISO 13616 checksum.
 - Exchange rates are supplied to PL/SQL operations rather than retrieved from a live market-data service.
 - The project models database behavior, not authentication, authorization, regulatory compliance, or a complete banking application.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

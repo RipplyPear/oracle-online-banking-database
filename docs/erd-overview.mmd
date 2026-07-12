@@ -1,0 +1,33 @@
+erDiagram
+    direction LR
+
+    CUSTOMERS ||--o{ ACCOUNTS : owns
+    ACCOUNTS ||--o{ TRANSACTIONS : records
+    ACCOUNTS ||--o{ TRANSFERS : initiates
+    ACCOUNTS o|--o{ TRANSFERS : receives
+    EXTERNAL_PAYEES o|--o{ TRANSFERS : receives
+
+    CUSTOMERS {
+        varchar2 customer_id PK
+    }
+
+    ACCOUNTS {
+        varchar2 iban PK
+        varchar2 customer_id FK
+    }
+
+    EXTERNAL_PAYEES {
+        varchar2 iban PK
+    }
+
+    TRANSFERS {
+        varchar2 transfer_id PK
+        varchar2 source_iban FK
+        varchar2 destination_account_iban FK
+        varchar2 destination_payee_iban FK
+    }
+
+    TRANSACTIONS {
+        varchar2 transaction_id PK
+        varchar2 account_iban FK
+    }
