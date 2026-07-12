@@ -1,5 +1,7 @@
 # Oracle Online Banking Database
 
+[![Oracle CI](https://github.com/RipplyPear/oracle-online-banking-database/actions/workflows/ci.yml/badge.svg)](https://github.com/RipplyPear/oracle-online-banking-database/actions/workflows/ci.yml)
+
 An Oracle database project that models the core data and operations of a small online banking platform. It combines a constrained relational model, synthetic banking data, transactional PL/SQL services, reporting views, analytical SQL, automated tests, and a reproducible Docker Compose environment.
 
 The project began as university coursework for Database and Oracle DBMS classes and was redesigned as a self-contained portfolio project. It no longer depends on a university-hosted database or proprietary desktop tooling.

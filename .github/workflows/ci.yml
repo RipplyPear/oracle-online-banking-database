@@ -65,7 +65,7 @@ jobs:
         run: ./scripts/run_queries.sh > query-results.txt
 
       - name: Show query summary
-        run: grep -E 'rows selected|no rows selected' query-results.txt
+        run: grep -E 'row(s)? selected|no rows selected' query-results.txt
 
       - name: Show Oracle logs on failure
         if: failure()
