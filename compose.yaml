@@ -5,7 +5,7 @@ services:
       - "127.0.0.1:1521:1521"
     environment:
       ORACLE_PASSWORD: ${ORACLE_PASSWORD}
-      APP_USER: ${APP_USER}
+      APP_USER: ${APP_USER:-BANKING_APP}
       APP_USER_PASSWORD: ${APP_USER_PASSWORD}
     volumes:
       - oracle-data:/opt/oracle/oradata
