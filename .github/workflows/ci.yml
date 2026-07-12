@@ -1,0 +1,75 @@
+name: Oracle CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oracle-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  database-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ORACLE_PASSWORD: ci-admin-password-2026
+      APP_USER_PASSWORD: ci-app-password-2026
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Start and initialize Oracle
+        run: docker compose up -d
+
+      - name: Wait for Oracle health check
+        shell: bash
+        run: |
+          container_id="$(docker compose ps -q oracle)"
+
+          for attempt in {1..60}; do
+            container_status="$(
+              docker inspect --format '{{.State.Status}}' "$container_id" 2>/dev/null || true
+            )"
+            health_status="$(
+              docker inspect --format '{{.State.Health.Status}}' "$container_id" 2>/dev/null || true
+            )"
+
+            if [[ "$health_status" == "healthy" ]]; then
+              echo "Oracle is healthy."
+              exit 0
+            fi
+
+            if [[ "$container_status" == "exited" || "$container_status" == "dead" ]]; then
+              echo "Oracle stopped during initialization."
+              exit 1
+            fi
+
+            echo "Waiting for Oracle ($attempt/60): ${health_status:-not-ready}"
+            sleep 5
+          done
+
+          echo "Timed out waiting for Oracle."
+          exit 1
+
+      - name: Run PL/SQL service tests
+        run: ./scripts/run_tests.sh
+
+      - name: Run analytical query catalog
+        run: ./scripts/run_queries.sh > query-results.txt
+
+      - name: Show query summary
+        run: grep -E 'rows selected|no rows selected' query-results.txt
+
+      - name: Show Oracle logs on failure
+        if: failure()
+        run: docker compose logs oracle
+
+      - name: Stop Oracle
+        if: always()
+        run: docker compose down -v
