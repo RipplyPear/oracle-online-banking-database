@@ -29,12 +29,12 @@ BEGIN
         (SELECT COUNT(*)
            FROM transfers
           WHERE ABS(converted_amount - ROUND(original_amount * exchange_rate, 2)) > 0.01
-             OR ABS(total_amount - (converted_amount + fee_amount)) > 0.01)
+             OR ABS(total_amount - (original_amount + fee_amount)) > 0.01)
         +
         (SELECT COUNT(*)
            FROM transactions
           WHERE ABS(converted_amount - ROUND(original_amount * exchange_rate, 2)) > 0.01
-             OR ABS(total_amount - (converted_amount + fee_amount)) > 0.01)
+             OR ABS(total_amount - (original_amount + fee_amount)) > 0.01)
       INTO v_invalid_amounts
       FROM dual;
 
